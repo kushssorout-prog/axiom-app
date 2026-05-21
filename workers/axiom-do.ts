@@ -206,6 +206,41 @@ export class AxiomDO extends DurableObject<Env> {
         published_at INTEGER,
         created_at INTEGER DEFAULT (unixepoch())
       );
+      CREATE TABLE IF NOT EXISTS marketing_content (
+        id TEXT PRIMARY KEY,
+        vertical TEXT NOT NULL,
+        type TEXT NOT NULL,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL,
+        status TEXT DEFAULT 'draft',
+        published_at INTEGER,
+        performance_score INTEGER DEFAULT 0,
+        created_at INTEGER DEFAULT (unixepoch())
+      );
+      CREATE TABLE IF NOT EXISTS leads (
+        id TEXT PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        firm_name TEXT,
+        firm_size TEXT,
+        sector TEXT,
+        source TEXT,
+        lead_score INTEGER DEFAULT 0,
+        status TEXT DEFAULT 'new',
+        last_contacted_at INTEGER,
+        created_at INTEGER DEFAULT (unixepoch())
+      );
+      CREATE TABLE IF NOT EXISTS email_sequences (
+        id TEXT PRIMARY KEY,
+        lead_id TEXT NOT NULL,
+        sequence_name TEXT NOT NULL,
+        step INTEGER DEFAULT 1,
+        status TEXT DEFAULT 'pending',
+        scheduled_at INTEGER,
+        sent_at INTEGER,
+        subject TEXT,
+        body TEXT,
+        created_at INTEGER DEFAULT (unixepoch())
+      );
       CREATE TABLE IF NOT EXISTS geo_assessments (
         id TEXT PRIMARY KEY,
         operator_id TEXT,
@@ -607,6 +642,25 @@ export class AxiomDO extends DurableObject<Env> {
     return Math.min(100, Math.round(leverageRisk + liquidityRisk + counterpartyRisk + sizeRisk));
   }
 
+  // ── LEAD SCORING ──────────────────────────────────────────────────────────
+  private scoreLead(data: any): number {
+    let score = 0;
+    // Firm size scoring
+    if (data.firmSize === '500+') score += 40;
+    else if (data.firmSize === '100-500') score += 30;
+    else if (data.firmSize === '20-100') score += 20;
+    else score += 10;
+    // Sector scoring
+    if (data.sector === 'legal' || data.sector === 'finance') score += 30;
+    else if (data.sector === 'healthcare') score += 25;
+    else score += 10;
+    // Source scoring
+    if (data.source === 'referral') score += 20;
+    else if (data.source === 'demo') score += 15;
+    else if (data.source === 'seo') score += 10;
+    return Math.min(100, score);
+  }
+
   private async hashPassword(password: string): Promise<string> {
     const enc = new TextEncoder();
     const buf = await crypto.subtle.digest('SHA-256', enc.encode(password + 'axiom-salt-2026'));
@@ -801,7 +855,69 @@ export class AxiomDO extends DurableObject<Env> {
         const body = await request.json() as any;
         return Response.json(await this.evaluateTransactionWithGeo(body));
       }
-            return Response.json({ error: 'Not found' }, { status: 404 });
+
+      // ── MARKETING CONTENT ──
+      if (path === '/api/marketing/content' && method === 'POST') {
+        const body = await request.json() as any;
+        const id = crypto.randomUUID();
+        this.sql.exec(
+          `INSERT INTO marketing_content (id,vertical,type,title,content) VALUES (?,?,?,?,?)`,
+          id, body.vertical, body.type, body.title || '', body.content
+        );
+        return Response.json({ id });
+      }
+      if (path === '/api/marketing/content' && method === 'GET') {
+        const vertical = url.searchParams.get('vertical') || null;
+        const type = url.searchParams.get('type') || null;
+        let query = `SELECT * FROM marketing_content`;
+        const params: any[] = [];
+        const conditions: string[] = [];
+        if (vertical) { conditions.push(`vertical=?`); params.push(vertical); }
+        if (type) { conditions.push(`type=?`); params.push(type); }
+        if (conditions.length > 0) query += ` WHERE ` + conditions.join(' AND ');
+        query += ` ORDER BY created_at DESC LIMIT 50`;
+        return Response.json(this.sql.exec(query, ...params).toArray());
+      }
+      if (path.startsWith('/api/marketing/content/') && method === 'PATCH') {
+        const id = path.split('/')[4];
+        const body = await request.json() as any;
+        if (body.status) {
+          const publishedAt = body.status === 'published' ? Math.floor(Date.now() / 1000) : null;
+          if (publishedAt) {
+            this.sql.exec(`UPDATE marketing_content SET status=?, published_at=? WHERE id=?`, body.status, publishedAt, id);
+          } else {
+            this.sql.exec(`UPDATE marketing_content SET status=? WHERE id=?`, body.status, id);
+          }
+        }
+        return Response.json({ ok: true });
+      }
+      if (path === '/api/marketing/stats' && method === 'GET') {
+        const total = (this.sql.exec(`SELECT COUNT(*) as c FROM marketing_content`).toArray()[0] as any)?.c || 0;
+        const approved = (this.sql.exec(`SELECT COUNT(*) as c FROM marketing_content WHERE status='approved'`).toArray()[0] as any)?.c || 0;
+        const published = (this.sql.exec(`SELECT COUNT(*) as c FROM marketing_content WHERE status='published'`).toArray()[0] as any)?.c || 0;
+        const byVertical = this.sql.exec(`SELECT vertical, COUNT(*) as count FROM marketing_content GROUP BY vertical`).toArray();
+        return Response.json({ total, approved, published, byVertical });
+      }
+      if (path === '/api/marketing/generate' && method === 'POST') {
+        return Response.json({ ok: true, message: 'Content generation triggered' });
+      }
+
+      // ── LEADS ──
+      if (path === '/api/leads' && method === 'POST') {
+        const body = await request.json() as any;
+        const id = crypto.randomUUID();
+        const score = this.scoreLead(body);
+        this.sql.exec(
+          `INSERT OR IGNORE INTO leads (id,email,firm_name,firm_size,sector,source,lead_score) VALUES (?,?,?,?,?,?,?)`,
+          id, body.email, body.firmName||'', body.firmSize||'', body.sector||'', body.source||'web', score
+        );
+        return Response.json({ id, score });
+      }
+      if (path === '/api/leads' && method === 'GET') {
+        return Response.json(this.sql.exec(`SELECT * FROM leads ORDER BY lead_score DESC, created_at DESC LIMIT 100`).toArray());
+      }
+
+      return Response.json({ error: 'Not found' }, { status: 404 });
     } catch (e: any) {
       return Response.json({ error: e.message }, { status: 500 });
     }

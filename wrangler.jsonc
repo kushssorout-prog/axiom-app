@@ -24,5 +24,8 @@
   "services": [
     { "binding": "DATA_PROXY", "service": "axiom-app", "entrypoint": "LocalDataProxyService" },
     { "binding": "CONNECTIONS", "service": "axiom-app", "entrypoint": "LocalConnectionsService" }
-  ]
+  ],
+  "triggers": {
+    "crons": ["0 9 * * 1"]
+  }
 }

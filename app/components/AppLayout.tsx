@@ -31,12 +31,19 @@ const NAV = [
     ]
   },
   {
+    group: 'Creative', items: [
+      { href: '/entertainment', label: 'Entertainment', icon: '🎬', desc: 'IP & rights compliance' },
+      { href: '/creativity',   label: 'Creativity Hub', icon: '🎨', desc: 'Brand & originality' },
+    ]
+  },
+  {
     group: 'Reports', items: [
       { href: '/reports', label: 'Reg. Reporter', icon: '📋', desc: 'Compliance reports' },
     ]
   },
   {
     group: 'Platform', items: [
+      { href: '/marketing',   label: 'Marketing Engine', icon: '📢', desc: 'Content + leads' },
       { href: '/api-keys',    label: 'API Keys',       icon: '🔑', desc: 'External integrations' },
       { href: '/integrations',label: 'Bots',           icon: '🤖', desc: 'Telegram & Discord' },
       { href: '/referrals',  label: 'Refer & Earn',   icon: '🎁', desc: 'Grow Axiom' },

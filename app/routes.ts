@@ -17,6 +17,8 @@ export default [
   route("geopolitics", "routes/geopolitics.tsx"),
   route("immigration", "routes/immigration.tsx"),
   route("pricing", "routes/pricing.tsx"),
+  route("entertainment", "routes/entertainment.tsx"),
+  route("creativity", "routes/creativity.tsx"),
   route("api/ai/generate", "routes/api.ai.generate.tsx"),
   route("api/telegram/webhook", "routes/api.telegram.webhook.tsx"),
   route("api/discord/interactions", "routes/api.discord.interactions.tsx"),
@@ -25,4 +27,9 @@ export default [
   route("api-docs", "routes/api-docs.tsx"),
   route("referrals", "routes/referrals.tsx"),
   route("integrations", "routes/integrations.tsx"),
+  route("for-law-firms", "routes/for-law-firms.tsx"),
+  route("for-financial-services", "routes/for-financial-services.tsx"),
+  route("roi-calculator", "routes/roi-calculator.tsx"),
+  route("free-assessment", "routes/free-assessment.tsx"),
+  route("marketing", "routes/marketing.tsx"),
 ] satisfies RouteConfig;
