@@ -16,4 +16,11 @@ export default [
   route("reports", "routes/reports.tsx"),
   route("pricing", "routes/pricing.tsx"),
   route("api/ai/generate", "routes/api.ai.generate.tsx"),
+  route("api/telegram/webhook", "routes/api.telegram.webhook.tsx"),
+  route("api/discord/interactions", "routes/api.discord.interactions.tsx"),
+  route("api/public/check", "routes/api.public.check.tsx"),
+  route("api-keys", "routes/api-keys.tsx"),
+  route("api-docs", "routes/api-docs.tsx"),
+  route("referrals", "routes/referrals.tsx"),
+  route("integrations", "routes/integrations.tsx"),
 ] satisfies RouteConfig;

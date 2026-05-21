@@ -33,6 +33,14 @@ const NAV = [
       { href: '/reports', label: 'Reg. Reporter', icon: '📋', desc: 'Compliance reports' },
     ]
   },
+  {
+    group: 'Platform', items: [
+      { href: '/api-keys',    label: 'API Keys',       icon: '🔑', desc: 'External integrations' },
+      { href: '/integrations',label: 'Bots',           icon: '🤖', desc: 'Telegram & Discord' },
+      { href: '/referrals',  label: 'Refer & Earn',   icon: '🎁', desc: 'Grow Axiom' },
+      { href: '/api-docs',   label: 'API Docs',       icon: '📄', desc: 'REST API reference' },
+    ]
+  },
 ];
 
 export function AppLayout({ children }: { children: React.ReactNode }) {

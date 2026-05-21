@@ -6,6 +6,20 @@ export class AxiomDO extends DurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     this.initSchema();
+    // Seed demo user asynchronously before any requests are handled
+    ctx.blockConcurrencyWhile(() => this.seedDemoUser());
+  }
+
+  private async seedDemoUser() {
+    const existing = this.sql.exec("SELECT COUNT(*) as c FROM operators WHERE email='admin@firm.com'").toArray()[0] as any;
+    if (existing?.c > 0) return;
+    await this.createOperator({
+      name: 'Axiom Admin',
+      email: 'admin@firm.com',
+      password: 'axiom2026',
+      role: 'admin',
+      department: 'Platform Administration'
+    });
   }
 
   private initSchema() {
@@ -152,12 +166,52 @@ export class AxiomDO extends DurableObject<Env> {
         rejection_reason TEXT,
         created_at INTEGER DEFAULT (unixepoch())
       );
+
+      CREATE TABLE IF NOT EXISTS api_keys (
+        id TEXT PRIMARY KEY,
+        operator_id TEXT NOT NULL,
+        name TEXT NOT NULL,
+        key_hash TEXT UNIQUE NOT NULL,
+        key_prefix TEXT NOT NULL,
+        scopes TEXT DEFAULT '["sessions","approvals","audit"]',
+        is_active INTEGER DEFAULT 1,
+        last_used_at INTEGER,
+        created_at INTEGER DEFAULT (unixepoch())
+      );
+      CREATE TABLE IF NOT EXISTS referrals (
+        id TEXT PRIMARY KEY,
+        referrer_operator_id TEXT NOT NULL,
+        referral_code TEXT UNIQUE NOT NULL,
+        referred_email TEXT,
+        status TEXT DEFAULT 'pending',
+        reward_credited INTEGER DEFAULT 0,
+        created_at INTEGER DEFAULT (unixepoch()),
+        converted_at INTEGER
+      );
+      CREATE TABLE IF NOT EXISTS bot_connections (
+        id TEXT PRIMARY KEY,
+        platform TEXT NOT NULL,
+        operator_id TEXT,
+        chat_id TEXT NOT NULL,
+        is_active INTEGER DEFAULT 1,
+        created_at INTEGER DEFAULT (unixepoch())
+      );
+      CREATE TABLE IF NOT EXISTS scheduled_content (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        body TEXT NOT NULL,
+        platform TEXT NOT NULL,
+        status TEXT DEFAULT 'draft',
+        scheduled_at INTEGER,
+        published_at INTEGER,
+        created_at INTEGER DEFAULT (unixepoch())
+      );
     `);
     this.seedDefaultData();
   }
 
   private seedDefaultData() {
-    const existing = this.sql.exec("SELECT COUNT(*) as c FROM compliance_rules").one() as any;
+    const existing = this.sql.exec("SELECT COUNT(*) as c FROM compliance_rules").toArray()[0] as any;
     if (existing.c > 0) return;
 
     const rules = [
@@ -172,6 +226,11 @@ export class AxiomDO extends DurableObject<Env> {
       { id: 'r9', name: 'Hallucination Guard', category: 'quality', keywords: 'definitively,absolutely certain,guaranteed,100% sure,no doubt', severity: 'medium', sector: 'all', score: 15 },
       { id: 'r10', name: 'Scope Drift Detector', category: 'governance', keywords: 'I recommend you,you should invest,personal advice,diagnosis', severity: 'medium', sector: 'all', score: 15 },
       { id: 'r11', name: 'Toxicity Filter', category: 'safety', keywords: 'illegal,fraudulent,deceive,exploit,manipulate client', severity: 'high', sector: 'all', score: 25 },
+      { id: 'h1', name: 'PHI Identifier Guard', category: 'hipaa', keywords: 'date of birth,social security,medical record number,MRN,patient name,health plan,account number', severity: 'critical', sector: 'healthcare', score: 40 },
+      { id: 'h2', name: 'Diagnosis Code Filter', category: 'hipaa', keywords: 'ICD-10,diagnosis code,clinical finding,prognosis,condition code', severity: 'high', sector: 'healthcare', score: 25 },
+      { id: 'h3', name: 'Prescription Safety Gate', category: 'hipaa', keywords: 'prescribe,dosage,milligrams,medication order,drug interaction,controlled substance', severity: 'critical', sector: 'healthcare', score: 40 },
+      { id: 'h4', name: '42 CFR Part 2 Guard', category: 'hipaa', keywords: 'substance abuse,addiction treatment,rehab,methadone,suboxone,treatment program records', severity: 'critical', sector: 'healthcare', score: 40 },
+      { id: 'h5', name: 'Provider Communication Guard', category: 'hipaa', keywords: 'patient told me,my patient,clinical notes,chart says,discharge summary', severity: 'high', sector: 'healthcare', score: 25 },
     ];
     for (const r of rules) {
       this.sql.exec(
@@ -217,11 +276,11 @@ export class AxiomDO extends DurableObject<Env> {
       id, data.name, data.email, hash, data.role || 'operator', data.department || null
     );
     this.writeAudit('operator.created', id, id, 'operator', id, { name: data.name, email: data.email });
-    return this.sql.exec(`SELECT id,name,email,role,department,approval_score,is_active,created_at FROM operators WHERE id=?`, id).one();
+    return this.sql.exec(`SELECT id,name,email,role,department,approval_score,is_active,created_at FROM operators WHERE id=?`, id).toArray()[0] || null;
   }
 
   async loginOperator(email: string, password: string) {
-    const op = this.sql.exec(`SELECT * FROM operators WHERE email=? AND is_active=1`, email).one() as any;
+    const op = this.sql.exec(`SELECT * FROM operators WHERE email=? AND is_active=1`, email).toArray()[0] as any;
     if (!op) return null;
     const ok = await this.verifyPassword(password, op.password_hash);
     if (!ok) return null;
@@ -236,8 +295,8 @@ export class AxiomDO extends DurableObject<Env> {
     const sess = this.sql.exec(
       `SELECT os.*, o.name, o.email, o.role, o.approval_score, o.department, o.public_key FROM operator_sessions os JOIN operators o ON os.operator_id=o.id WHERE os.token=? AND os.expires_at > ?`,
       token, Math.floor(Date.now() / 1000)
-    ).one() as any;
-    return sess;
+    ).toArray()[0] as any;
+    return sess || null;
   }
 
   async logoutOperator(token: string) {
@@ -285,13 +344,41 @@ export class AxiomDO extends DurableObject<Env> {
     return { sessionId, status, riskScore, energyScore, triggeredRules };
   }
 
+  async midstreamHalt(sessionId: string, riskScore: number, triggeredRules: any[], accumulated: string) {
+    const now = Math.floor(Date.now() / 1000);
+    // Freeze the session — wipe partial response, create approval request
+    this.sql.exec(
+      `UPDATE ai_sessions SET status='frozen', risk_score=?, compliance_violations=?, triggered_rules=?, response_text=NULL, completed_at=? WHERE id=?`,
+      riskScore,
+      JSON.stringify(triggeredRules.map((r: any) => r.name)),
+      JSON.stringify(triggeredRules.map((r: any) => r.id)),
+      now, sessionId
+    );
+    const session = this.sql.exec(`SELECT * FROM ai_sessions WHERE id=?`, sessionId).toArray()[0] as any;
+    const approvalId = 'apr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12);
+    this.sql.exec(
+      `INSERT INTO approval_requests (id, session_id, requester_id, status) VALUES (?, ?, ?, 'pending')`,
+      approvalId, sessionId, session?.operator_id || 'system'
+    );
+    // Log Circuit Breaker mid-stream event
+    this.sql.exec(
+      `INSERT INTO circuit_breaker_events (id, session_id, event_type, rule_ids, risk_score_at_event, context_snapshot) VALUES (?, ?, 'midstream_frozen', ?, ?, ?)`,
+      crypto.randomUUID(), sessionId,
+      JSON.stringify(triggeredRules.map((r: any) => r.id)),
+      riskScore,
+      JSON.stringify({ interceptedAt: accumulated?.length || 0, partialResponseChars: accumulated?.length || 0 })
+    );
+    this.writeAudit('session.midstream_halt', session?.operator_id, session?.operator_name, 'session', sessionId, { riskScore, rules: triggeredRules.map((r: any) => r.name), interceptedAt: accumulated?.length || 0 });
+    return { ok: true, approvalId };
+  }
+
   async completeSession(sessionId: string, responseText: string, tokensUsed: number) {
     const now = Math.floor(Date.now() / 1000);
     this.sql.exec(
       `UPDATE ai_sessions SET status='completed',response_text=?,tokens_used=?,completed_at=? WHERE id=?`,
       responseText, tokensUsed, now, sessionId
     );
-    const session = this.sql.exec(`SELECT * FROM ai_sessions WHERE id=?`, sessionId).one() as any;
+    const session = this.sql.exec(`SELECT * FROM ai_sessions WHERE id=?`, sessionId).toArray()[0] as any;
     const aiPct = Math.round(60 + Math.random() * 30);
     const humanPct = 100 - aiPct;
     const baseRate = 500;
@@ -312,7 +399,7 @@ export class AxiomDO extends DurableObject<Env> {
   }
 
   async getSession(id: string) {
-    return this.sql.exec(`SELECT * FROM ai_sessions WHERE id=?`, id).one();
+    return this.sql.exec(`SELECT * FROM ai_sessions WHERE id=?`, id).toArray()[0] || null;
   }
 
   // ── APPROVALS ──
@@ -327,7 +414,7 @@ export class AxiomDO extends DurableObject<Env> {
       `UPDATE approval_requests SET status=?,reviewer_id=?,signature=?,notes=?,reviewed_at=? WHERE id=?`,
       decision, reviewerId, signature, notes, now, approvalId
     );
-    const approval = this.sql.exec(`SELECT * FROM approval_requests WHERE id=?`, approvalId).one() as any;
+    const approval = this.sql.exec(`SELECT * FROM approval_requests WHERE id=?`, approvalId).toArray()[0] as any;
     if (approval && decision === 'approved') {
       this.sql.exec(`UPDATE ai_sessions SET status='approved' WHERE id=?`, approval.session_id);
     }
@@ -344,7 +431,7 @@ export class AxiomDO extends DurableObject<Env> {
   }
 
   async getAuditCount() {
-    return (this.sql.exec(`SELECT COUNT(*) as c FROM audit_log`).one() as any)?.c || 0;
+    return (this.sql.exec(`SELECT COUNT(*) as c FROM audit_log`).toArray()[0] as any)?.c || 0;
   }
 
   // ── OPERATORS ──
@@ -357,7 +444,7 @@ export class AxiomDO extends DurableObject<Env> {
     if (data.department !== undefined) this.sql.exec(`UPDATE operators SET department=? WHERE id=?`, data.department, id);
     if (data.public_key !== undefined) this.sql.exec(`UPDATE operators SET public_key=? WHERE id=?`, data.public_key, id);
     if (data.is_active !== undefined) this.sql.exec(`UPDATE operators SET is_active=? WHERE id=?`, data.is_active, id);
-    return this.sql.exec(`SELECT id,name,email,role,department,approval_score,is_active,public_key FROM operators WHERE id=?`, id).one();
+    return this.sql.exec(`SELECT id,name,email,role,department,approval_score,is_active,public_key FROM operators WHERE id=?`, id).toArray()[0] || null;
   }
 
   // ── COMPLIANCE RULES ──
@@ -464,14 +551,14 @@ export class AxiomDO extends DurableObject<Env> {
 
   // ── DASHBOARD STATS ──
   async getDashboardStats() {
-    const totalSessions = (this.sql.exec(`SELECT COUNT(*) as c FROM ai_sessions`).one() as any)?.c || 0;
-    const blockedToday = (this.sql.exec(`SELECT COUNT(*) as c FROM ai_sessions WHERE status IN ('blocked','frozen') AND created_at > ?`, Math.floor(Date.now() / 1000) - 86400).one() as any)?.c || 0;
-    const pendingApprovals = (this.sql.exec(`SELECT COUNT(*) as c FROM approval_requests WHERE status='pending'`).one() as any)?.c || 0;
-    const totalOperators = (this.sql.exec(`SELECT COUNT(*) as c FROM operators WHERE is_active=1`).one() as any)?.c || 0;
-    const avgRisk = (this.sql.exec(`SELECT AVG(risk_score) as a FROM ai_sessions WHERE created_at > ?`, Math.floor(Date.now() / 1000) - 86400 * 7).one() as any)?.a || 0;
+    const totalSessions = (this.sql.exec(`SELECT COUNT(*) as c FROM ai_sessions`).toArray()[0] as any)?.c || 0;
+    const blockedToday = (this.sql.exec(`SELECT COUNT(*) as c FROM ai_sessions WHERE status IN ('blocked','frozen') AND created_at > ?`, Math.floor(Date.now() / 1000) - 86400).toArray()[0] as any)?.c || 0;
+    const pendingApprovals = (this.sql.exec(`SELECT COUNT(*) as c FROM approval_requests WHERE status='pending'`).toArray()[0] as any)?.c || 0;
+    const totalOperators = (this.sql.exec(`SELECT COUNT(*) as c FROM operators WHERE is_active=1`).toArray()[0] as any)?.c || 0;
+    const avgRisk = (this.sql.exec(`SELECT AVG(risk_score) as a FROM ai_sessions WHERE created_at > ?`, Math.floor(Date.now() / 1000) - 86400 * 7).toArray()[0] as any)?.a || 0;
     const recentSessions = this.sql.exec(`SELECT id,operator_name,session_type,module,status,risk_score,created_at FROM ai_sessions ORDER BY created_at DESC LIMIT 10`).toArray();
     const recentEvents = this.sql.exec(`SELECT * FROM circuit_breaker_events ORDER BY created_at DESC LIMIT 5`).toArray();
-    const breachCount = (this.sql.exec(`SELECT SUM(breach_count) as s FROM compliance_boundaries`).one() as any)?.s || 0;
+    const breachCount = (this.sql.exec(`SELECT SUM(breach_count) as s FROM compliance_boundaries`).toArray()[0] as any)?.s || 0;
     return { totalSessions, blockedToday, pendingApprovals, totalOperators, avgRisk: Math.round(avgRisk * 10) / 10, recentSessions, recentEvents, breachCount };
   }
 
@@ -517,7 +604,7 @@ export class AxiomDO extends DurableObject<Env> {
 
   private writeAudit(eventType: string, actorId: string | null, actorName: string | null, resourceType: string, resourceId: string, payload: any) {
     const id = crypto.randomUUID();
-    const prevRow = this.sql.exec(`SELECT hash FROM audit_log ORDER BY created_at DESC LIMIT 1`).one() as any;
+    const prevRow = this.sql.exec(`SELECT hash FROM audit_log ORDER BY created_at DESC LIMIT 1`).toArray()[0] as any;
     const prevHash = prevRow?.hash || '0000000000000000';
     const hashInput = `${id}:${eventType}:${resourceId}:${prevHash}:${Date.now()}`;
     let hash = 0;
@@ -576,6 +663,11 @@ export class AxiomDO extends DurableObject<Env> {
         const id = path.split('/')[3];
         const body = await request.json() as any;
         return Response.json(await this.completeSession(id, body.responseText, body.tokensUsed || 0));
+      }
+      if (path.startsWith('/api/sessions/') && path.endsWith('/midstream-halt') && method === 'POST') {
+        const id = path.split('/')[3];
+        const body = await request.json() as any;
+        return Response.json(await this.midstreamHalt(id, body.riskScore, body.triggeredRules, body.accumulated));
       }
       if (path === '/api/approvals' && method === 'GET') {
         const status = url.searchParams.get('status') || undefined;
@@ -645,9 +737,119 @@ export class AxiomDO extends DurableObject<Env> {
         const body = await request.json() as any;
         return Response.json(await this.generateReport(body.dateFrom, body.dateTo));
       }
-      return Response.json({ error: 'Not found' }, { status: 404 });
+
+      if (path === '/api/bots/register' && method === 'POST') {
+        const body = await request.json() as any;
+        return Response.json(await this.registerBotConnection(body.platform, body.chatId, body.operatorId));
+      }
+      if (path === '/api/keys/create' && method === 'POST') {
+        const body = await request.json() as any;
+        return Response.json(await this.createApiKey(body.operatorId, body.name, body.scopes || []));
+      }
+      if (path === '/api/keys/verify' && method === 'POST') {
+        const body = await request.json() as any;
+        const key = await this.verifyApiKey(body.key);
+        return Response.json(key ? { valid: true, operatorId: key.operator_id, operatorName: key.op_name } : { valid: false });
+      }
+      if (path.startsWith('/api/keys/list/') && method === 'GET') {
+        const opId = path.split('/')[4];
+        return Response.json(await this.listApiKeys(opId));
+      }
+      if (path.startsWith('/api/keys/') && method === 'DELETE') {
+        const id = path.split('/')[3];
+        return Response.json(await this.revokeApiKey(id));
+      }
+      if (path === '/api/referrals/create' && method === 'POST') {
+        const body = await request.json() as any;
+        return Response.json(await this.createReferralCode(body.operatorId));
+      }
+      if (path.startsWith('/api/referrals/') && method === 'GET') {
+        const opId = path.split('/')[3];
+        const code = await this.createReferralCode(opId);
+        const stats = await this.getReferralStats(opId);
+        return Response.json({ ...code, ...stats });
+      }
+            return Response.json({ error: 'Not found' }, { status: 404 });
     } catch (e: any) {
       return Response.json({ error: e.message }, { status: 500 });
     }
   }
+
+// ── API KEY MANAGEMENT ──────────────────────────────────────────────────
+  async createApiKey(operatorId: string, name: string, scopes: string[]) {
+    const raw = 'axm_' + crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '');
+    const prefix = raw.slice(0, 12);
+    const enc = new TextEncoder();
+    const buf = await crypto.subtle.digest('SHA-256', enc.encode(raw));
+    const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    const id = crypto.randomUUID();
+    this.sql.exec(
+      `INSERT INTO api_keys (id,operator_id,name,key_hash,key_prefix,scopes) VALUES (?,?,?,?,?,?)`,
+      id, operatorId, name, hash, prefix, JSON.stringify(scopes)
+    );
+    this.writeAudit('api_key.created', operatorId, null, 'api_key', id, { name, prefix });
+    return { id, key: raw, prefix, name };
+  }
+
+  async listApiKeys(operatorId: string) {
+    return this.sql.exec(`SELECT id,name,key_prefix,scopes,is_active,last_used_at,created_at FROM api_keys WHERE operator_id=? ORDER BY created_at DESC`, operatorId).toArray();
+  }
+
+  async revokeApiKey(id: string) {
+    this.sql.exec(`UPDATE api_keys SET is_active=0 WHERE id=?`, id);
+    return { ok: true };
+  }
+
+  async verifyApiKey(rawKey: string) {
+    const enc = new TextEncoder();
+    const buf = await crypto.subtle.digest('SHA-256', enc.encode(rawKey));
+    const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    const key = this.sql.exec(`SELECT ak.*, o.name as op_name, o.email, o.role FROM api_keys ak JOIN operators o ON ak.operator_id=o.id WHERE ak.key_hash=? AND ak.is_active=1`, hash).toArray()[0] as any;
+    if (!key) return null;
+    this.sql.exec(`UPDATE api_keys SET last_used_at=? WHERE id=?`, Math.floor(Date.now()/1000), key.id);
+    return key;
+  }
+
+  // ── REFERRALS ─────────────────────────────────────────────────────────────
+  async createReferralCode(operatorId: string) {
+    const code = 'AXIOM' + Math.random().toString(36).slice(2,8).toUpperCase();
+    const existing = this.sql.exec(`SELECT id FROM referrals WHERE referrer_operator_id=?`, operatorId).toArray()[0] as any;
+    if (existing) return { code: existing.id };
+    const id = crypto.randomUUID();
+    this.sql.exec(`INSERT INTO referrals (id,referrer_operator_id,referral_code) VALUES (?,?,?)`, id, operatorId, code);
+    return { code };
+  }
+
+  async trackReferralConversion(code: string, email: string) {
+    const ref = this.sql.exec(`SELECT * FROM referrals WHERE referral_code=?`, code).toArray()[0] as any;
+    if (!ref) return null;
+    this.sql.exec(`UPDATE referrals SET referred_email=?,status='converted',converted_at=? WHERE referral_code=?`,
+      email, Math.floor(Date.now()/1000), code);
+    this.writeAudit('referral.converted', ref.referrer_operator_id, null, 'referral', ref.id, { email });
+    return { ok: true, referrerId: ref.referrer_operator_id };
+  }
+
+  async getReferralStats(operatorId: string) {
+    const refs = this.sql.exec(`SELECT * FROM referrals WHERE referrer_operator_id=?`, operatorId).toArray();
+    const converted = refs.filter((r: any) => r.status === 'converted').length;
+    return { total: refs.length, converted, pending: refs.length - converted, refs };
+  }
+
+  // ── BOT CONNECTIONS ────────────────────────────────────────────────────────
+  async registerBotConnection(platform: string, chatId: string, operatorId?: string) {
+    const id = crypto.randomUUID();
+    this.sql.exec(`INSERT OR REPLACE INTO bot_connections (id,platform,operator_id,chat_id) VALUES (?,?,?,?)`,
+      id, platform, operatorId || null, chatId);
+    return { id };
+  }
+
+  async getBotConnections(platform: string) {
+    return this.sql.exec(`SELECT * FROM bot_connections WHERE platform=? AND is_active=1`, platform).toArray();
+  }
+
+  async notifyBots(sessionId: string, status: string, riskScore: number, triggeredRules: string[]) {
+    const connections = this.sql.exec(`SELECT * FROM bot_connections WHERE is_active=1`).toArray();
+    return { connections: connections.length, sessionId, status, riskScore };
+  }
+
 }
