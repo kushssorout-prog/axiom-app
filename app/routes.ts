@@ -14,6 +14,8 @@ export default [
   route("finance", "routes/finance.tsx"),
   route("terminology", "routes/terminology.tsx"),
   route("reports", "routes/reports.tsx"),
+  route("geopolitics", "routes/geopolitics.tsx"),
+  route("immigration", "routes/immigration.tsx"),
   route("pricing", "routes/pricing.tsx"),
   route("api/ai/generate", "routes/api.ai.generate.tsx"),
   route("api/telegram/webhook", "routes/api.telegram.webhook.tsx"),

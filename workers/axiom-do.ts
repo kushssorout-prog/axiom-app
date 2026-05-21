@@ -206,6 +206,22 @@ export class AxiomDO extends DurableObject<Env> {
         published_at INTEGER,
         created_at INTEGER DEFAULT (unixepoch())
       );
+      CREATE TABLE IF NOT EXISTS geo_assessments (
+        id TEXT PRIMARY KEY,
+        operator_id TEXT,
+        context TEXT NOT NULL,
+        iso2_primary TEXT NOT NULL,
+        iso2_secondary TEXT,
+        iso2_transit TEXT,
+        energy_score REAL NOT NULL,
+        risk_score INTEGER NOT NULL,
+        risk_tier TEXT NOT NULL,
+        warnings TEXT DEFAULT '[]',
+        flags TEXT DEFAULT '[]',
+        recommendation TEXT,
+        module TEXT DEFAULT 'finance',
+        created_at INTEGER DEFAULT (unixepoch())
+      );
     `);
     this.seedDefaultData();
   }
@@ -769,6 +785,22 @@ export class AxiomDO extends DurableObject<Env> {
         const stats = await this.getReferralStats(opId);
         return Response.json({ ...code, ...stats });
       }
+      
+      if (path === '/api/geo/assess' && method === 'POST') {
+        const body = await request.json() as any;
+        return Response.json(await this.assessJurisdiction(body));
+      }
+      if (path === '/api/geo/history' && method === 'GET') {
+        const opId = url.searchParams.get('operatorId') || '';
+        return Response.json(await this.getGeoHistory(opId));
+      }
+      if (path === '/api/geo/stats' && method === 'GET') {
+        return Response.json(await this.getGeoStats());
+      }
+      if (path === '/api/finance/evaluate-geo' && method === 'POST') {
+        const body = await request.json() as any;
+        return Response.json(await this.evaluateTransactionWithGeo(body));
+      }
             return Response.json({ error: 'Not found' }, { status: 404 });
     } catch (e: any) {
       return Response.json({ error: e.message }, { status: 500 });
@@ -850,6 +882,100 @@ export class AxiomDO extends DurableObject<Env> {
   async notifyBots(sessionId: string, status: string, riskScore: number, triggeredRules: string[]) {
     const connections = this.sql.exec(`SELECT * FROM bot_connections WHERE is_active=1`).toArray();
     return { connections: connections.length, sessionId, status, riskScore };
+  }
+
+
+// ── GEOPOLITICAL RISK ENGINE ────────────────────────────────────────────
+  async assessJurisdiction(params: { operatorId: string; iso2: string; iso2Secondary?: string; iso2Transit?: string; context: string; module: string }) {
+    const { GeoEngine, getJurisdiction } = await import('./geo-engine.js') as any;
+    const primary = getJurisdiction(params.iso2);
+    if (!primary) return { error: `Jurisdiction ${params.iso2} not found` };
+
+    let result: any;
+    if (params.iso2Secondary) {
+      const secondary = getJurisdiction(params.iso2Secondary);
+      const transit   = params.iso2Transit ? [getJurisdiction(params.iso2Transit)].filter(Boolean) : [];
+      result = secondary ? GeoEngine.assessCorridor(primary, secondary, transit) : GeoEngine.assess(primary);
+    } else {
+      result = GeoEngine.assess(primary);
+    }
+
+    const id = 'geo_' + crypto.randomUUID().replace(/-/g,'').slice(0,12);
+    const energyScore = result.energyScore ?? result.corridorEnergy ?? 0;
+    const riskScore   = result.riskScore   ?? (result.origin?.riskScore ?? 0);
+    const riskTier    = result.riskTier    ?? result.overallRisk ?? 'unknown';
+
+    this.sql.exec(
+      `INSERT INTO geo_assessments (id,operator_id,context,iso2_primary,iso2_secondary,iso2_transit,energy_score,risk_score,risk_tier,warnings,flags,recommendation,module)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      id, params.operatorId, params.context,
+      params.iso2, params.iso2Secondary || null, params.iso2Transit || null,
+      energyScore, riskScore, riskTier,
+      JSON.stringify(result.warnings || result.flags || []),
+      JSON.stringify(result.flags || []),
+      result.recommendation || '', params.module
+    );
+
+    this.writeAudit('geo.assessed', params.operatorId, null, 'geo_assessment', id, { iso2: params.iso2, riskTier, riskScore });
+    return { id, ...result };
+  }
+
+  async getGeoHistory(operatorId: string, limit = 50) {
+    return this.sql.exec(
+      `SELECT * FROM geo_assessments WHERE operator_id=? ORDER BY created_at DESC LIMIT ?`,
+      operatorId, limit
+    ).toArray();
+  }
+
+  async getGeoStats() {
+    const total    = (this.sql.exec(`SELECT COUNT(*) as c FROM geo_assessments`).toArray()[0] as any)?.c || 0;
+    const critical = (this.sql.exec(`SELECT COUNT(*) as c FROM geo_assessments WHERE risk_tier='critical'`).toArray()[0] as any)?.c || 0;
+    const recent   = this.sql.exec(`SELECT * FROM geo_assessments ORDER BY created_at DESC LIMIT 5`).toArray();
+    return { total, critical, recent };
+  }
+
+  // Enhanced finance evaluation with geo-risk
+  async evaluateTransactionWithGeo(data: { operatorId: string; assetValue: number; leverageRatio: number; liquidityIndex: number; counterpartyTier: number; counterpartyJurisdiction?: string }) {
+    // Base financial risk
+    const baseResult = await this.evaluateTransaction(data);
+
+    if (!data.counterpartyJurisdiction) return baseResult;
+
+    // Geo risk overlay
+    const { GeoEngine, getJurisdiction } = await import('./geo-engine.js') as any;
+    const geoVec = getJurisdiction(data.counterpartyJurisdiction);
+    if (!geoVec) return baseResult;
+
+    const geoResult   = GeoEngine.assess(geoVec);
+    const geoAddition = Math.round(geoResult.riskScore * 0.4); // Geo adds up to 40 pts
+    const combinedEnergy = parseFloat((baseResult.energyScore + geoResult.energyScore * 0.3).toFixed(2));
+
+    let finalStatus = baseResult.status;
+    if (geoVec.sanctioned) finalStatus = 'rejected';
+    else if (combinedEnergy > 75 && finalStatus !== 'rejected') finalStatus = 'rejected';
+    else if (combinedEnergy > 50 && finalStatus === 'approved') finalStatus = 'flagged';
+
+    const geoWarnings = geoResult.warnings || [];
+    const finalRejectionReason = finalStatus === 'rejected'
+      ? (geoVec.sanctioned ? `⛔ Sanctioned jurisdiction: ${geoVec.name}. Transaction prohibited.` : `Combined risk score ${combinedEnergy}/100 exceeds threshold. Jurisdiction: ${geoVec.name} (${geoResult.riskTier} risk).`)
+      : baseResult.rejectionReason;
+
+    // Update in DB
+    this.sql.exec(
+      `UPDATE financial_transactions SET energy_score=?,status=?,rejection_reason=? WHERE id=?`,
+      combinedEnergy, finalStatus, finalRejectionReason, baseResult.id
+    );
+
+    return {
+      ...baseResult,
+      energyScore: combinedEnergy,
+      status: finalStatus,
+      rejectionReason: finalRejectionReason,
+      geoRisk: {
+        jurisdiction: geoVec.name, iso2: geoVec.iso2, riskTier: geoResult.riskTier,
+        riskScore: geoResult.riskScore, warnings: geoWarnings, sanctioned: geoVec.sanctioned,
+      },
+    };
   }
 
 }

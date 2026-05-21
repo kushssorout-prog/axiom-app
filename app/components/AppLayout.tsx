@@ -16,11 +16,13 @@ const NAV = [
       { href: '/operators', label: 'Operators', icon: '👤', desc: 'Access & scorecard' },
       { href: '/lex', label: 'Axiom-Lex', icon: '◎', desc: 'Vector boundaries' },
       { href: '/terminology', label: 'Terminology', icon: '📖', desc: 'Canonical definitions' },
+      { href: '/geopolitics', label: 'Geo Risk Engine', icon: '🌍', desc: 'Jurisdictional risk' },
     ]
   },
   {
     group: 'Axiom-Kinetic', items: [
       { href: '/kinetic', label: 'Kinetic FLNW', icon: '🤖', desc: 'Robotics interceptor' },
+      { href: '/immigration', label: 'Immigration', icon: '✈️', desc: 'Relocation risk' },
     ]
   },
   {

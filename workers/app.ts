@@ -1,5 +1,6 @@
 import { createRequestHandler } from "react-router";
 export { AxiomDO } from "./axiom-do";
+export { GeoEngine, JURISDICTIONS } from "./geo-engine";
 export { LocalDataProxyService } from "./data-proxy";
 export { LocalConnectionsService } from "./connections";
 
@@ -20,7 +21,7 @@ export default {
 
     // Route all /api/* calls to the Durable Object
     // EXCEPT /api/ai/* which are handled by React Router server actions
-    if (url.pathname.startsWith('/api/') && !url.pathname.startsWith('/api/ai/')) {
+    if (url.pathname.startsWith('/api/') && !url.pathname.startsWith('/api/ai/') && !url.pathname.startsWith('/api/public/') && !url.pathname.startsWith('/api/telegram/') && !url.pathname.startsWith('/api/discord/')) {
       const id = env.AXIOM_DO.idFromName('global');
       const stub = env.AXIOM_DO.get(id);
       return stub.fetch(request);
