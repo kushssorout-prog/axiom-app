@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "axiom-app",
+  "compatibility_date": "2026-02-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./workers/app.ts",
+  "observability": { "enabled": true },
+  "ai": { "binding": "AI" },
+  "durable_objects": {
+    "bindings": [
+      { "name": "AXIOM_DO", "class_name": "AxiomDO" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["AxiomDO"] }
+  ],
+  "vars": {
+    "AI_VIRTUAL_MODEL": "auto",
+    "VALUE_FROM_CLOUDFLARE": "Axiom Platform on Cloudflare",
+    "STRIPE_PUBLISHABLE_KEY": "pk_test_your_key_here"
+  },
+  "assets": { "directory": "./public/", "binding": "ASSETS" },
+  
+  "services": [
+    { "binding": "DATA_PROXY", "service": "axiom-app", "entrypoint": "LocalDataProxyService" },
+    { "binding": "CONNECTIONS", "service": "axiom-app", "entrypoint": "LocalConnectionsService" }
+  ]
+}
