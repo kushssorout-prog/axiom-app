@@ -3,7 +3,7 @@ import type { MetaFunction } from 'react-router';
 import { Link } from 'react-router';
 
 export const meta: MetaFunction = () => [
-  { title: 'Free AI Governance Risk Assessment | Axiom' },
+  { title: 'Free AI Governance Risk Assessment | ACCRNOVA' },
   {
     name: 'description',
     content:
@@ -92,7 +92,7 @@ function getRec(a: Answers, level: string) {
     a.hadIncident !== 'No' && 'incident response protocol',
   ].filter(Boolean) as string[];
 
-  return `Implement Axiom Core to address ${gaps.length} critical governance gap${gaps.length !== 1 ? 's' : ''}: ${gaps.join(', ')}.`;
+  return `Implement ACCRNOVA Core to address ${gaps.length} critical governance gap${gaps.length !== 1 ? 's' : ''}: ${gaps.join(', ')}.`;
 }
 
 export default function FreeAssessment() {
@@ -153,7 +153,7 @@ export default function FreeAssessment() {
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">A</div>
-            <span className="font-bold text-slate-900 tracking-tight text-[15px]">Axiom</span>
+            <span className="font-bold text-slate-900 tracking-tight text-[15px]">ACCRNOVA</span>
           </Link>
           <div className="flex items-center gap-4">
             <Link to="/roi-calculator" className="text-sm text-slate-500 hover:text-slate-900 transition-colors hidden sm:block">ROI Calculator</Link>
@@ -299,7 +299,7 @@ export default function FreeAssessment() {
             {/* CTAs */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <a
-                href={`mailto:${answers.email.includes('law') || answers.firmName.toLowerCase().includes('law') ? 'legal' : 'hello'}@useaxiom.io?subject=Full Risk Assessment - ${encodeURIComponent(answers.firmName)}&body=Hi, I just completed the free risk assessment for ${encodeURIComponent(answers.firmName)}. Risk level: ${level}. I'd like to discuss a full assessment.`}
+                href={`mailto:${answers.email.includes('law') || answers.firmName.toLowerCase().includes('law') ? 'legal' : 'hello'}@accrnova.app?subject=Full Risk Assessment - ${encodeURIComponent(answers.firmName)}&body=Hi, I just completed the free risk assessment for ${encodeURIComponent(answers.firmName)}. Risk level: ${level}. I'd like to discuss a full assessment.`}
                 className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-700 text-white font-bold py-4 rounded-xl transition-colors text-sm"
               >
                 Request Full Assessment →
@@ -308,7 +308,7 @@ export default function FreeAssessment() {
                 to="/pricing"
                 className="flex items-center justify-center gap-2 bg-white border border-slate-200 hover:border-slate-400 text-slate-700 font-semibold py-4 rounded-xl transition-colors text-sm"
               >
-                See Axiom Pricing →
+                See ACCRNOVA Pricing →
               </Link>
             </div>
 
@@ -497,7 +497,7 @@ export default function FreeAssessment() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <div className="w-6 h-6 bg-white/10 rounded flex items-center justify-center text-white font-bold text-xs">A</div>
-            <span className="text-sm font-semibold text-white">Axiom</span>
+            <span className="text-sm font-semibold text-white">ACCRNOVA</span>
             <span className="text-xs">— AI Governance Platform</span>
           </div>
           <div className="flex gap-6 text-xs">

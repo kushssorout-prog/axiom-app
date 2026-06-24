@@ -907,7 +907,7 @@ export default function Sessions() {
             </span>
           </div>
           <p className="text-[13px] text-slate-500 ml-10">
-            Submit prompts through Axiom's compliance engine before AI processing
+            Submit prompts through ACCRNOVA's compliance engine before AI processing
           </p>
         </div>
 

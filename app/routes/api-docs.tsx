@@ -12,11 +12,11 @@ const ENDPOINTS = [
 ];
 
 const JS_EXAMPLE = `// 1. Install nothing — pure fetch API
-const AXIOM_KEY = 'axm_your_key_here';
+const AXIOM_KEY = 'acn_your_key_here';
 
 // Run a compliance check
 async function checkCompliance(prompt, module = 'general') {
-  const res = await fetch('https://useaxiom.io/api/public/check', {
+  const res = await fetch('https://accrnova.app/api/public/check', {
     method: 'POST',
     headers: {
       'X-Axiom-Key': AXIOM_KEY,
@@ -31,7 +31,7 @@ async function checkCompliance(prompt, module = 'general') {
   // result.status → 'completed' | 'frozen' | 'blocked'
 
   if (!result.allowed) {
-    console.warn('Blocked by Axiom:', result.message);
+    console.warn('Blocked by ACCRNOVA:', result.message);
     return null;
   }
 
@@ -50,11 +50,11 @@ if (check?.allowed) {
 
 const PYTHON_EXAMPLE = `import requests
 
-AXIOM_KEY = "axm_your_key_here"
-BASE_URL = "https://useaxiom.io"
+AXIOM_KEY = "acn_your_key_here"
+BASE_URL = "https://accrnova.app"
 
 def check_compliance(prompt: str, module: str = "general") -> dict:
-    """Run an Axiom compliance check before any AI call."""
+    """Run an ACCRNOVA compliance check before any AI call."""
     response = requests.post(
         f"{BASE_URL}/api/public/check",
         headers={
@@ -86,21 +86,21 @@ sessions = requests.get(
 ).json()`;
 
 const CURL_EXAMPLE = `# Compliance check (API Key auth)
-curl -X POST https://useaxiom.io/api/public/check \\
-  -H "X-Axiom-Key: axm_your_key_here" \\
+curl -X POST https://accrnova.app/api/public/check \\
+  -H "X-Axiom-Key: acn_your_key_here" \\
   -H "Content-Type: application/json" \\
   -d '{"prompt": "Draft NDA summary", "module": "legal"}'
 
 # ─────────────────────────────────────────
 
 # List sessions (Bearer auth)
-curl https://useaxiom.io/api/sessions \\
+curl https://accrnova.app/api/sessions \\
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 
 # ─────────────────────────────────────────
 
 # Review an approval
-curl -X POST https://useaxiom.io/api/approvals/appr_abc123 \\
+curl -X POST https://accrnova.app/api/approvals/appr_abc123 \\
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \\
   -H "Content-Type: application/json" \\
   -d '{"decision": "approved", "note": "Reviewed and cleared"}'
@@ -108,7 +108,7 @@ curl -X POST https://useaxiom.io/api/approvals/appr_abc123 \\
 # ─────────────────────────────────────────
 
 # Query audit log
-curl "https://useaxiom.io/api/audit?limit=20&offset=0" \\
+curl "https://accrnova.app/api/audit?limit=20&offset=0" \\
   -H "Authorization: Bearer YOUR_JWT_TOKEN"`;
 
 const SECTIONS = [
@@ -175,7 +175,7 @@ export default function ApiDocs() {
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center gap-4">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold text-xs">A</div>
-            <span className="font-bold text-slate-900 text-[15px]">Axiom REST API</span>
+            <span className="font-bold text-slate-900 text-[15px]">ACCRNOVA REST API</span>
             <span className="text-xs font-bold bg-blue-600 text-white px-2 py-0.5 rounded-full">v2.0</span>
           </div>
           <div className="ml-auto flex items-center gap-4">
@@ -213,13 +213,13 @@ export default function ApiDocs() {
 
           {/* Hero */}
           <div>
-            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">Axiom REST API</h1>
+            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">ACCRNOVA REST API</h1>
             <p className="text-lg text-slate-500 mt-3 leading-relaxed">
-              Integrate Axiom's AI governance engine directly into your applications.
+              Integrate ACCRNOVA's AI governance engine directly into your applications.
               Run compliance checks, manage sessions, and access audit data programmatically.
             </p>
             <div className="mt-4 flex items-center gap-3">
-              <span className="text-xs font-bold bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full border border-slate-200">Base URL: https://useaxiom.io</span>
+              <span className="text-xs font-bold bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full border border-slate-200">Base URL: https://accrnova.app</span>
               <span className="text-xs font-bold bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full border border-emerald-200">● Live</span>
             </div>
           </div>
@@ -237,14 +237,14 @@ export default function ApiDocs() {
                 <p className="text-sm text-slate-700">Login-based auth. Use the JWT returned by <code className="bg-slate-200 px-1 rounded text-xs">/api/login</code>. Best for operator dashboards.</p>
               </div>
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                <p className="text-xs font-bold text-blue-600 uppercase tracking-wide mb-1">X-Axiom-Key Header</p>
+                <p className="text-xs font-bold text-blue-600 uppercase tracking-wide mb-1">X-ACCRNOVA-Key Header</p>
                 <p className="text-sm text-slate-700">API key auth. Pass your <code className="bg-blue-100 px-1 rounded text-xs">axm_...</code> key in the header. Best for server-to-server calls.</p>
               </div>
             </div>
             <CodeBlock
               language="bash — API key authentication"
-              code={`curl https://useaxiom.io/api/public/check \\
-  -H "X-Axiom-Key: axm_your_key_here" \\
+              code={`curl https://accrnova.app/api/public/check \\
+  -H "X-Axiom-Key: acn_your_key_here" \\
   -H "Content-Type: application/json" \\
   -d '{"prompt": "Your AI prompt here", "module": "general"}'`}
             />
@@ -259,7 +259,7 @@ export default function ApiDocs() {
             </p>
             <CodeBlock
               language="javascript"
-              code={`const res = await fetch('https://useaxiom.io/api/public/check', {
+              code={`const res = await fetch('https://accrnova.app/api/public/check', {
   method: 'POST',
   headers: {
     'X-Axiom-Key': 'axm_...',
@@ -274,7 +274,7 @@ const { status, riskScore, allowed } = await res.json();
 // allowed: true/false — whether to proceed with the AI call
 
 if (!allowed) {
-  // Block the request — Axiom flagged it
+  // Block the request — ACCRNOVA flagged it
   return { error: 'Prompt blocked by compliance policy' };
 }`}
             />
@@ -410,7 +410,7 @@ if (!allowed) {
                 </p>
               </div>
               <a
-                href="mailto:hello@useaxiom.io?subject=SDK Early Access"
+                href="mailto:hello@accrnova.app?subject=SDK Early Access"
                 className="text-sm font-semibold text-blue-600 hover:text-blue-700 flex-shrink-0"
               >
                 → Join Early Access
@@ -420,8 +420,8 @@ if (!allowed) {
 
           {/* Footer */}
           <div className="border-t border-slate-100 pt-8 pb-4 flex items-center justify-between text-sm text-slate-400">
-            <span>© 2025 Axiom Governance Inc.</span>
-            <a href="mailto:hello@useaxiom.io" className="hover:text-slate-600 transition-colors">hello@useaxiom.io</a>
+            <span>© 2025 ACCRNOVA Governance Inc.</span>
+            <a href="mailto:hello@accrnova.app" className="hover:text-slate-600 transition-colors">hello@accrnova.app</a>
           </div>
         </main>
       </div>

@@ -215,7 +215,7 @@ export default function ReportsPage() {
               <h3 className="text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Compliance Summary</h3>
               <p className="text-sm text-slate-700 leading-relaxed">
                 During the reporting period from <strong>{report.date_from}</strong> to <strong>{report.date_to}</strong>,
-                the Axiom platform monitored <strong>{report.total_sessions}</strong> AI sessions. The Circuit Breaker
+                the ACCRNOVA platform monitored <strong>{report.total_sessions}</strong> AI sessions. The Circuit Breaker
                 intercepted <strong>{report.circuit_breaker_events}</strong> sessions requiring human review and blocked{' '}
                 <strong>{report.blocked}</strong> sessions outright. Average compliance risk score was{' '}
                 <strong>{report.avg_risk_score}/100</strong>, indicating{' '}

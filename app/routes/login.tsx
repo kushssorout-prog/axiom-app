@@ -51,14 +51,14 @@ export default function Login() {
                 <span className="text-white font-bold text-base tracking-tight">A</span>
               </div>
               <div>
-                <span className="font-bold text-slate-900 text-xl tracking-tight">Axiom</span>
+                <span className="font-bold text-slate-900 text-xl tracking-tight">ACCRNOVA</span>
                 <span className="ml-2 text-[10px] font-semibold bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full border border-blue-200 align-middle">v2.0</span>
               </div>
             </div>
 
             {/* Headline */}
             <div className="mb-7">
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Sign in to Axiom</h1>
+              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Sign in to ACCRNOVA</h1>
               <p className="text-slate-500 text-sm mt-1">AI governance platform</p>
             </div>
 
@@ -140,7 +140,7 @@ export default function Login() {
 
         {/* Footer */}
         <p className="text-center text-xs text-slate-400 mt-5">
-          © 2026 Axiom AI Governance Platform · Enterprise Security
+          © 2026 ACCRNOVA AI Governance Platform · Enterprise Security
         </p>
       </div>
     </div>

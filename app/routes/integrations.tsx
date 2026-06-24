@@ -98,9 +98,9 @@ export default function Integrations() {
                 <ol className="space-y-3">
                   {[
                     <>Message <strong>@BotFather</strong> on Telegram → type <code className="bg-slate-100 px-1 rounded text-xs">/newbot</code></>,
-                    <>Name your bot (e.g. <em>"Axiom Compliance Bot"</em>)</>,
+                    <>Name your bot (e.g. <em>"ACCRNOVA Compliance Bot"</em>)</>,
                     <>Copy the <strong>bot token</strong> you receive</>,
-                    <>Add it to your Axiom environment: <code className="bg-slate-100 px-1 rounded text-xs">TELEGRAM_BOT_TOKEN=your_token</code></>,
+                    <>Add it to your ACCRNOVA environment: <code className="bg-slate-100 px-1 rounded text-xs">TELEGRAM_BOT_TOKEN=your_token</code></>,
                     <>Register webhook (one-time):</>,
                     <>Message your bot <code className="bg-slate-100 px-1 rounded text-xs">/start</code></>,
                   ].map((step, i) => (
@@ -175,7 +175,7 @@ export default function Integrations() {
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Setup</p>
                 <ol className="space-y-3">
                   {[
-                    <>Go to <strong>discord.com/developers</strong> → New Application → name it <em>"Axiom"</em></>,
+                    <>Go to <strong>discord.com/developers</strong> → New Application → name it <em>"ACCRNOVA"</em></>,
                     <>Bot tab → Add Bot → copy the <strong>bot token</strong></>,
                     <>OAuth2 → URL Generator → check <code className="bg-slate-100 px-1 rounded text-xs">bot</code> + <code className="bg-slate-100 px-1 rounded text-xs">applications.commands</code> → copy invite link → add to server</>,
                     <>General Information → set <strong>Interactions Endpoint URL</strong> to the URL below</>,
@@ -205,7 +205,7 @@ export default function Integrations() {
   -d '[
     {
       "name": "status",
-      "description": "Get Axiom platform status"
+      "description": "Get ACCRNOVA platform status"
     },
     {
       "name": "approvals",
@@ -239,12 +239,12 @@ export default function Integrations() {
             <div className="flex-1 min-w-0">
               <p className="text-sm text-slate-700 leading-relaxed">
                 WhatsApp Business API requires <strong>Meta Business Verification</strong>, which typically takes 3–6 weeks.
-                Email <a href="mailto:hello@useaxiom.io" className="text-blue-600 hover:underline">hello@useaxiom.io</a> to join
+                Email <a href="mailto:hello@accrnova.app" className="text-blue-600 hover:underline">hello@accrnova.app</a> to join
                 the waitlist — we'll notify you as soon as the integration is ready to activate.
               </p>
             </div>
             <a
-              href="mailto:hello@useaxiom.io?subject=WhatsApp%20Integration%20Waitlist&body=Hi%2C%20I%27d%20like%20to%20join%20the%20WhatsApp%20Business%20API%20waitlist%20for%20Axiom."
+              href="mailto:hello@accrnova.app?subject=WhatsApp%20Integration%20Waitlist&body=Hi%2C%20I%27d%20like%20to%20join%20the%20WhatsApp%20Business%20API%20waitlist%20for%20ACCRNOVA."
               className="flex-shrink-0 flex items-center gap-2 bg-[#25D366] text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#22c55e] transition-colors"
             >
               Join WhatsApp Waitlist →

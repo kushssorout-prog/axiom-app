@@ -3,11 +3,11 @@ import type { MetaFunction } from 'react-router';
 import { Link } from 'react-router';
 
 export const meta: MetaFunction = () => [
-  { title: 'AI Governance ROI Calculator | Axiom' },
+  { title: 'AI Governance ROI Calculator | ACCRNOVA' },
   {
     name: 'description',
     content:
-      'Calculate the ROI of AI governance for your firm. See your annual compliance risk exposure vs. the cost of Axiom — in 60 seconds.',
+      'Calculate the ROI of AI governance for your firm. See your annual compliance risk exposure vs. the cost of ACCRNOVA — in 60 seconds.',
   },
 ];
 
@@ -117,14 +117,14 @@ export default function RoiCalculator() {
   const incidentRate     = 0.003;
   const uncaughtRate     = 0.15;
   const annualRisk       = annualSessions * incidentRate * uncaughtRate * claimValue;
-  const axiomCost        = attorneys > 200 ? 8_000 : attorneys > 50 ? 5_000 : 3_000;
-  const annualAxiomCost  = axiomCost * 12;
-  const netROI           = annualRisk - annualAxiomCost;
-  const roiMultiple      = annualRisk / Math.max(annualAxiomCost, 1);
+  const accrnovaCost        = attorneys > 200 ? 8_000 : attorneys > 50 ? 5_000 : 3_000;
+  const annualACCRNOVACost  = accrnovaCost * 12;
+  const netROI           = annualRisk - annualACCRNOVACost;
+  const roiMultiple      = annualRisk / Math.max(annualACCRNOVACost, 1);
 
   // Animated values
   const animRisk    = useAnimatedValue(annualRisk);
-  const animCost    = useAnimatedValue(annualAxiomCost);
+  const animCost    = useAnimatedValue(annualACCRNOVACost);
   const animNet     = useAnimatedValue(Math.max(netROI, 0));
   const animSessions = useAnimatedValue(annualSessions);
 
@@ -137,7 +137,7 @@ export default function RoiCalculator() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">A</div>
-            <span className="font-bold text-slate-900 tracking-tight text-[15px]">Axiom</span>
+            <span className="font-bold text-slate-900 tracking-tight text-[15px]">ACCRNOVA</span>
           </Link>
           <div className="flex items-center gap-4">
             <Link to="/for-law-firms" className="text-sm text-slate-500 hover:text-slate-900 transition-colors hidden sm:block">Law Firms</Link>
@@ -152,7 +152,7 @@ export default function RoiCalculator() {
           AI Governance ROI Calculator
         </h1>
         <p className="text-slate-300 text-lg max-w-xl mx-auto">
-          See your firm's annual AI compliance risk exposure — and how many times Axiom pays for itself.
+          See your firm's annual AI compliance risk exposure — and how many times ACCRNOVA pays for itself.
         </p>
       </div>
 
@@ -241,7 +241,7 @@ export default function RoiCalculator() {
               <p className="text-xs font-bold text-blue-700 mb-1">Methodology</p>
               <p className="text-xs text-blue-600 leading-relaxed">
                 Based on industry-reported incident rates: 0.3% of AI sessions produce a compliance incident.
-                Without governance, ~15% of incidents go undetected. Axiom reduces undetected incidents to near zero.
+                Without governance, ~15% of incidents go undetected. ACCRNOVA reduces undetected incidents to near zero.
                 Claim values based on published industry data for {sector === 'law' ? 'legal malpractice' : sector === 'finance' ? 'regulatory enforcement' : 'professional liability'} cases.
               </p>
             </div>
@@ -261,7 +261,7 @@ export default function RoiCalculator() {
                 <p className={`text-lg font-semibold mb-1 ${roiGood ? 'text-slate-300' : 'text-red-600'}`}>return</p>
               </div>
               <p className={`text-sm ${roiGood ? 'text-slate-300' : 'text-red-600'}`}>
-                Axiom pays for itself <strong className={roiGood ? 'text-white' : 'text-red-800'}>{roiMultiple.toFixed(1)} times over</strong> based on your risk profile
+                ACCRNOVA pays for itself <strong className={roiGood ? 'text-white' : 'text-red-800'}>{roiMultiple.toFixed(1)} times over</strong> based on your risk profile
               </p>
             </div>
 
@@ -273,9 +273,9 @@ export default function RoiCalculator() {
                 <p className="text-xs text-red-500 mt-1">without governance</p>
               </div>
               <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
-                <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Annual Axiom Cost</p>
+                <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Annual ACCRNOVA Cost</p>
                 <p className="text-2xl font-black text-emerald-700 tabular-nums">{fmtLong(animCost)}</p>
-                <p className="text-xs text-emerald-600 mt-1">{fmt(axiomCost)}/month</p>
+                <p className="text-xs text-emerald-600 mt-1">{fmt(accrnovaCost)}/month</p>
               </div>
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
                 <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">Net Savings</p>
@@ -309,7 +309,7 @@ export default function RoiCalculator() {
 
             {/* CTA */}
             <div className="bg-slate-900 rounded-2xl p-6 text-white text-center">
-              <p className="text-lg font-bold mb-2">Ready to see Axiom in action?</p>
+              <p className="text-lg font-bold mb-2">Ready to see ACCRNOVA in action?</p>
               <p className="text-sm text-slate-400 mb-5">
                 {attorneys} professionals · {fmtCount(annualSessions)} sessions/year · {roiMultiple.toFixed(1)}× ROI
               </p>
@@ -318,7 +318,7 @@ export default function RoiCalculator() {
                   to="/login"
                   className="flex items-center justify-center gap-2 w-full bg-blue-500 hover:bg-blue-400 text-white font-bold py-3.5 rounded-xl transition-colors"
                 >
-                  See Axiom in action →
+                  See ACCRNOVA in action →
                 </Link>
                 <Link
                   to="/free-assessment"
@@ -337,7 +337,7 @@ export default function RoiCalculator() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <div className="w-6 h-6 bg-white/10 rounded flex items-center justify-center text-white font-bold text-xs">A</div>
-            <span className="text-sm font-semibold text-white">Axiom</span>
+            <span className="text-sm font-semibold text-white">ACCRNOVA</span>
             <span className="text-xs">— AI Governance Platform</span>
           </div>
           <div className="flex gap-6 text-xs">

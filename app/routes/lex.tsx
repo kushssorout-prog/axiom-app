@@ -605,7 +605,7 @@ export default function LexPage() {
           <div>
             <div className="flex items-center gap-3 mb-1">
               <span className="text-2xl">◎</span>
-              <h1 className="text-[22px] font-bold text-slate-900">Axiom-Lex</h1>
+              <h1 className="text-[22px] font-bold text-slate-900">ACCRNOVA-Lex</h1>
               <span className="text-[10px] font-semibold bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full border border-blue-200 uppercase tracking-wide">
                 Policy Sandbox
               </span>
@@ -630,7 +630,7 @@ export default function LexPage() {
           >
             <div className="flex items-center gap-2">
               <span className="text-blue-600">◉</span>
-              <span className="text-[13px] font-bold text-blue-900">What is Axiom-Lex?</span>
+              <span className="text-[13px] font-bold text-blue-900">What is ACCRNOVA-Lex?</span>
             </div>
             <span className="text-blue-400 text-[12px] transition-transform" style={{ transform: infoOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
               ▾
@@ -639,7 +639,7 @@ export default function LexPage() {
           {infoOpen && (
             <div className="px-5 pb-4">
               <p className="text-[13px] text-blue-800 leading-relaxed">
-                Axiom-Lex translates abstract regulatory constraints into{' '}
+                ACCRNOVA-Lex translates abstract regulatory constraints into{' '}
                 <strong>512-dimensional vector hyper-spheres</strong>. Each boundary defines an immutable{' '}
                 <em>"stationary center"</em> of safe operation. When an AI session's semantic trajectory
                 enters a critical radius, the <strong>Circuit Breaker activates</strong>.

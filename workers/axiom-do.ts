@@ -14,7 +14,7 @@ export class AxiomDO extends DurableObject<Env> {
     const existing = this.sql.exec("SELECT COUNT(*) as c FROM operators WHERE email='admin@firm.com'").toArray()[0] as any;
     if (existing?.c > 0) return;
     await this.createOperator({
-      name: 'Axiom Admin',
+      name: 'ACCRNOVA Admin',
       email: 'admin@firm.com',
       password: 'axiom2026',
       role: 'admin',
@@ -291,7 +291,7 @@ export class AxiomDO extends DurableObject<Env> {
     }
 
     const terms = [
-      { id: 't1', term: 'Circuit Breaker', definition: 'A compliance mechanism that intercepts AI output before it reaches the operator when policy boundaries are crossed.', framework: 'Axiom Core', sector: 'all' },
+      { id: 't1', term: 'Circuit Breaker', definition: 'A compliance mechanism that intercepts AI output before it reaches the operator when policy boundaries are crossed.', framework: 'ACCRNOVA Core', sector: 'all' },
       { id: 't2', term: 'Attorney-Client Privilege', definition: 'Legal protection of communications between client and attorney from disclosure. AI must never suggest waiving or compromising this protection.', framework: 'ABA Model Rules', sector: 'legal' },
       { id: 't3', term: 'Work Product Doctrine', definition: 'Protection for materials prepared in anticipation of litigation. AI outputs touch this doctrine.', framework: 'FRCP 26(b)(3)', sector: 'legal' },
       { id: 't4', term: 'MNPI', definition: 'Material Non-Public Information. AI must not generate content that appears to utilise or advise trading on MNPI.', framework: 'SEC Rule 10b-5', sector: 'financial' },

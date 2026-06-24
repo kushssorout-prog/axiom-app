@@ -96,7 +96,7 @@ export default function ApiKeys() {
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-slate-900">API Keys</h1>
-            <p className="text-slate-500 text-sm mt-1">Connect Axiom to external tools via the REST API</p>
+            <p className="text-slate-500 text-sm mt-1">Connect ACCRNOVA to external tools via the REST API</p>
           </div>
           <button
             onClick={() => setShowModal(true)}
@@ -111,7 +111,7 @@ export default function ApiKeys() {
           <span className="text-blue-500 text-lg flex-shrink-0">ℹ</span>
           <div>
             <p className="text-sm text-blue-800">
-              These keys authenticate the Axiom browser extension, SDK integrations, and REST API calls.
+              These keys authenticate the ACCRNOVA browser extension, SDK integrations, and REST API calls.
             </p>
             <Link to="/api-docs" className="text-sm font-semibold text-blue-600 hover:text-blue-700 mt-1 inline-block">
               → View API Documentation
@@ -156,7 +156,7 @@ export default function ApiKeys() {
             <div className="p-12 text-center">
               <p className="text-3xl mb-3">🔑</p>
               <p className="text-slate-600 font-medium">No API keys yet</p>
-              <p className="text-slate-400 text-sm mt-1">Create your first key to start integrating with Axiom</p>
+              <p className="text-slate-400 text-sm mt-1">Create your first key to start integrating with ACCRNOVA</p>
             </div>
           ) : (
             <table className="w-full text-sm">

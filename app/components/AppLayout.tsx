@@ -14,13 +14,13 @@ const NAV = [
   {
     group: 'Governance', items: [
       { href: '/operators', label: 'Operators', icon: '👤', desc: 'Access & scorecard' },
-      { href: '/lex', label: 'Axiom-Lex', icon: '◎', desc: 'Vector boundaries' },
+      { href: '/lex', label: 'ACCRNOVA-Lex', icon: '◎', desc: 'Vector boundaries' },
       { href: '/terminology', label: 'Terminology', icon: '📖', desc: 'Canonical definitions' },
       { href: '/geopolitics', label: 'Geo Risk Engine', icon: '🌍', desc: 'Jurisdictional risk' },
     ]
   },
   {
-    group: 'Axiom-Kinetic', items: [
+    group: 'ACCRNOVA-Kinetic', items: [
       { href: '/kinetic', label: 'Kinetic FLNW', icon: '🤖', desc: 'Robotics interceptor' },
       { href: '/immigration', label: 'Immigration', icon: '✈️', desc: 'Relocation risk' },
     ]
@@ -46,7 +46,7 @@ const NAV = [
       { href: '/marketing',   label: 'Marketing Engine', icon: '📢', desc: 'Content + leads' },
       { href: '/api-keys',    label: 'API Keys',       icon: '🔑', desc: 'External integrations' },
       { href: '/integrations',label: 'Bots',           icon: '🤖', desc: 'Telegram & Discord' },
-      { href: '/referrals',  label: 'Refer & Earn',   icon: '🎁', desc: 'Grow Axiom' },
+      { href: '/referrals',  label: 'Refer & Earn',   icon: '🎁', desc: 'Grow ACCRNOVA' },
       { href: '/api-docs',   label: 'API Docs',       icon: '📄', desc: 'REST API reference' },
     ]
   },
@@ -83,7 +83,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         {/* Logo */}
         <div className="h-14 px-5 flex items-center gap-3 border-b border-slate-100 flex-shrink-0">
           <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">A</div>
-          <span className="font-bold text-slate-900 tracking-tight text-[15px]">Axiom</span>
+          <span className="font-bold text-slate-900 tracking-tight text-[15px]">ACCRNOVA</span>
           <span className="ml-auto text-[10px] font-semibold bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full border border-blue-200">v2.0</span>
         </div>
 
@@ -137,7 +137,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <header className="h-14 bg-white border-b border-slate-200 px-6 flex items-center gap-4 flex-shrink-0">
           <button className="lg:hidden text-slate-500 hover:text-slate-900" onClick={() => setSidebarOpen(true)}>☰</button>
           <div className="flex items-center gap-1.5 text-[13px] text-slate-400">
-            <span>Axiom</span>
+            <span>ACCRNOVA</span>
             <span>/</span>
             <span className="text-slate-700 font-medium capitalize">{location.pathname.split('/')[1] || 'Dashboard'}</span>
           </div>

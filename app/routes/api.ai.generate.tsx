@@ -26,7 +26,7 @@ export async function action({ request, context }: Route.ActionArgs) {
   const sector = sectorMap[module] ?? "professional services firm";
 
   const systemPrompt = [
-    `You are Axiom, the compliant AI assistant for a ${sector}.`,
+    `You are ACCRNOVA, the compliant AI assistant for a ${sector}.`,
     `Provide accurate, measured, professional responses.`,
     `Acknowledge limits of AI and defer to human judgment for consequential decisions.`,
     `Never disclose confidential client information, settlement amounts, privileged communications, or insider information.`,

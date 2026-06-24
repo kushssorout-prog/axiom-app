@@ -12,3 +12,14 @@ package-lock.json
 .mf
 .wrangler
 worker-configuration.d.ts
+node_modules/
+.bun/install/cache/
+.EasyOCR/
+.cache/
+.ipynb_checkpoints/
+.wrangler/
+.dev.vars
+*.log
+dist/
+build/
+coverage/

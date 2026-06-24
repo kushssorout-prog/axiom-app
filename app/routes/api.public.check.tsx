@@ -6,7 +6,7 @@ export async function action({ request, context }: Route.ActionArgs) {
   const body = await request.json() as any;
   const apiKey = request.headers.get("X-Axiom-Key") || body.apiKey || "";
 
-  if (!apiKey) return data({ error: "API key required. Pass X-Axiom-Key header." }, { status: 401 });
+  if (!apiKey) return data({ error: "API key required. Pass X-ACCRNOVA-Key header." }, { status: 401 });
 
   const doId = env.AXIOM_DO.idFromName("global");
   const stub  = env.AXIOM_DO.get(doId);

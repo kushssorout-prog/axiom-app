@@ -18,7 +18,7 @@ export const links: Route.LinksFunction = () => [
 
 export function meta() {
   return [
-    { title: "Axiom — AI Governance Platform" },
+    { title: "ACCRNOVA — AI Governance Platform" },
     { name: "description", content: "Deterministic AI governance for law firms and financial services. Circuit Breaker, Audit Ledger, Pricing Engine." },
   ];
 }

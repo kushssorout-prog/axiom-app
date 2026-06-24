@@ -50,7 +50,7 @@ export default function Referrals() {
   };
 
   const referralCode = data?.code || data?.referralCode || '';
-  const referralLink = referralCode ? `https://useaxiom.io/?ref=${referralCode}` : '';
+  const referralLink = referralCode ? `https://accrnova.app/?ref=${referralCode}` : '';
 
   const copyLink = async () => {
     if (!referralLink) return;
@@ -60,12 +60,12 @@ export default function Referrals() {
   };
 
   const linkedInUrl = referralLink
-    ? `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}&title=${encodeURIComponent('Try Axiom — AI governance for law firms')}`
+    ? `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}&title=${encodeURIComponent('Try ACCRNOVA — AI governance for law firms')}`
     : '#';
 
   const mailtoUrl = referralLink
-    ? `mailto:?subject=${encodeURIComponent('Axiom — AI Governance for Law Firms')}&body=${encodeURIComponent(
-        `Hi,\n\nI've been using Axiom for AI governance and compliance. Thought you might find it useful.\n\nSign up here: ${referralLink}\n\nBest`
+    ? `mailto:?subject=${encodeURIComponent('ACCRNOVA — AI Governance for Law Firms')}&body=${encodeURIComponent(
+        `Hi,\n\nI've been using ACCRNOVA for AI governance and compliance. Thought you might find it useful.\n\nSign up here: ${referralLink}\n\nBest`
       )}`
     : '#';
 
@@ -78,12 +78,12 @@ export default function Referrals() {
     {
       num: 2,
       title: 'Referred firm becomes a paying client',
-      desc: 'When the firm signs up through your link and converts to a paid Axiom plan, your reward is triggered automatically.',
+      desc: 'When the firm signs up through your link and converts to a paid ACCRNOVA plan, your reward is triggered automatically.',
     },
     {
       num: 3,
       title: 'You receive 1 month free',
-      desc: 'One month is credited to your current Axiom plan — no redemption needed, no cap on referrals.',
+      desc: 'One month is credited to your current ACCRNOVA plan — no redemption needed, no cap on referrals.',
     },
   ];
 
@@ -186,7 +186,7 @@ export default function Referrals() {
               <div>
                 <h3 className="font-bold text-teal-900 mb-1">Unlimited rewards, no cap</h3>
                 <p className="text-sm text-teal-800 leading-relaxed">
-                  For every firm you refer that becomes a paying Axiom client, you receive <strong>1 month free</strong> on
+                  For every firm you refer that becomes a paying ACCRNOVA client, you receive <strong>1 month free</strong> on
                   your current plan. No cap on referrals — refer 10 firms, get 10 months free.
                 </p>
               </div>

@@ -152,7 +152,7 @@ export default function Onboarding() {
                 <div className="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center flex-shrink-0 shadow-inner">
                   <span className="text-white font-bold text-base">A</span>
                 </div>
-                <span className="font-bold text-slate-900 text-xl tracking-tight">Axiom</span>
+                <span className="font-bold text-slate-900 text-xl tracking-tight">ACCRNOVA</span>
               </div>
               <Link to="/login" className="text-xs text-slate-400 hover:text-slate-600 transition-colors">
                 ← Back to login
@@ -386,7 +386,7 @@ export default function Onboarding() {
                 <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
                   <p className="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-2">What's included</p>
                   <ul className="space-y-1.5">
-                    {['Circuit Breaker AI governance', 'Energy-Based Model risk scoring', 'Human-in-the-loop approvals', 'Tamper-evident audit ledger', 'Axiom-Lex vector boundaries'].map(f => (
+                    {['Circuit Breaker AI governance', 'Energy-Based Model risk scoring', 'Human-in-the-loop approvals', 'Tamper-evident audit ledger', 'ACCRNOVA-Lex vector boundaries'].map(f => (
                       <li key={f} className="flex items-center gap-2 text-xs text-emerald-800">
                         <span className="text-emerald-500 font-bold">✓</span>
                         {f}
@@ -416,7 +416,7 @@ export default function Onboarding() {
                         </svg>
                         Launching…
                       </>
-                    ) : 'Launch Your Axiom Platform →'}
+                    ) : 'Launch Your ACCRNOVA Platform →'}
                   </button>
                 </div>
               </div>
@@ -425,7 +425,7 @@ export default function Onboarding() {
         </div>
 
         <p className="text-center text-xs text-slate-400 mt-5">
-          © 2026 Axiom AI Governance Platform · Enterprise Security
+          © 2026 ACCRNOVA AI Governance Platform · Enterprise Security
         </p>
       </div>
     </div>

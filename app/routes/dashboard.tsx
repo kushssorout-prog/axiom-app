@@ -222,7 +222,7 @@ function AdminView({ data, loading, now }: { data: DashboardData | null; loading
                 </span>
               </div>
               <div className="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-xl">
-                <div className="flex items-center gap-2"><span className="text-base">◎</span><span className="text-xs font-semibold text-blue-700">Axiom-Lex Vectors</span></div>
+                <div className="flex items-center gap-2"><span className="text-base">◎</span><span className="text-xs font-semibold text-blue-700">ACCRNOVA-Lex Vectors</span></div>
                 <Link to="/operators" className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors">Manage Rules →</Link>
               </div>
             </div>

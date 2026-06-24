@@ -38,14 +38,14 @@ export async function action({ request, context }: Route.ActionArgs) {
 
     if (cmd === "status") {
       const s = await (await stub.fetch(new Request("http://do/api/dashboard"))).json() as any;
-      return Response.json({ type: 4, data: { embeds: [{ title: "⚡ Axiom Status", color: 0x0D9488, fields: [
+      return Response.json({ type: 4, data: { embeds: [{ title: "⚡ ACCRNOVA Status", color: 0x0D9488, fields: [
         { name: "🟢 Circuit Breaker", value: "Active", inline: true },
         { name: "📊 Sessions",        value: String(s.totalSessions), inline: true },
         { name: "🛡 Blocked Today",   value: String(s.blockedToday), inline: true },
         { name: "⏳ Pending",         value: String(s.pendingApprovals), inline: true },
         { name: "👥 Operators",       value: String(s.totalOperators), inline: true },
         { name: "📈 Avg Risk (7d)",   value: `${s.avgRisk}/100`, inline: true },
-      ], footer: { text: "Axiom · useaxiom.io" } }] } });
+      ], footer: { text: "ACCRNOVA · accrnova.app" } }] } });
     }
 
     if (cmd === "approvals") {

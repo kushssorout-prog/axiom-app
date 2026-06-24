@@ -59,7 +59,7 @@ const STATUS_COLORS: Record<string, string> = {
 const EMAIL_SEQUENCES = [
   {
     day: 0,
-    subject: 'Welcome to Axiom — Here\'s what happens next',
+    subject: 'Welcome to ACCRNOVA — Here\'s what happens next',
     preview: 'Your AI governance journey starts here. Let\'s show you what\'s possible.',
     condition: 'On signup',
     status: 'Active',
@@ -80,7 +80,7 @@ const EMAIL_SEQUENCES = [
   },
   {
     day: 30,
-    subject: 'Axiom is ready for your firm',
+    subject: 'ACCRNOVA is ready for your firm',
     preview: 'Everything in place. Here\'s how leading firms in your sector are deploying it.',
     condition: '30 days, warm leads only',
     status: 'Paused',
@@ -581,7 +581,7 @@ export default function MarketingPage() {
                 <ul className="space-y-2">
                   {[
                     'Connect email sender (Resend.com — free tier: 100 emails/day)',
-                    'Point useaxiom.io domain to Cloudflare',
+                    'Point accrnova.app domain to Cloudflare',
                     'First 3 LinkedIn posts from the queue → schedule manually',
                   ].map((item, i) => (
                     <li key={i} className="flex gap-2 text-sm text-amber-700">

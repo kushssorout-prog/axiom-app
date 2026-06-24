@@ -2,16 +2,16 @@ import type { MetaFunction } from 'react-router';
 import { Link } from 'react-router';
 
 export const meta: MetaFunction = () => [
-  { title: 'AI Governance for Law Firms | Axiom' },
+  { title: 'AI Governance for Law Firms | ACCRNOVA' },
   {
     name: 'description',
     content:
-      'Axiom protects law firms from AI malpractice liability. Streaming Circuit Breaker, cryptographic audit trails, and privilege doctrine enforcement. Try free.',
+      'ACCRNOVA protects law firms from AI malpractice liability. Streaming Circuit Breaker, cryptographic audit trails, and privilege doctrine enforcement. Try free.',
   },
-  { property: 'og:title', content: 'AI Governance for Law Firms | Axiom' },
+  { property: 'og:title', content: 'AI Governance for Law Firms | ACCRNOVA' },
   {
     property: 'og:description',
-    content: 'Axiom protects law firms from AI malpractice liability. Streaming Circuit Breaker, cryptographic audit trails, and privilege doctrine enforcement.',
+    content: 'ACCRNOVA protects law firms from AI malpractice liability. Streaming Circuit Breaker, cryptographic audit trails, and privilege doctrine enforcement.',
   },
 ];
 
@@ -41,13 +41,13 @@ export default function ForLawFirms() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">A</div>
-            <span className="font-bold text-slate-900 tracking-tight text-[15px]">Axiom</span>
+            <span className="font-bold text-slate-900 tracking-tight text-[15px]">ACCRNOVA</span>
           </Link>
           <div className="flex items-center gap-6">
             <Link to="/for-financial-services" className="text-sm text-slate-500 hover:text-slate-900 transition-colors hidden sm:block">Financial Services</Link>
             <Link to="/roi-calculator" className="text-sm text-slate-500 hover:text-slate-900 transition-colors hidden sm:block">ROI Calculator</Link>
             <a
-              href="mailto:legal@useaxiom.io"
+              href="mailto:legal@accrnova.app"
               className="bg-slate-900 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors"
             >
               Request Demo
@@ -69,12 +69,12 @@ export default function ForLawFirms() {
             <span className="text-blue-400">Finally.</span>
           </h1>
           <p className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed mb-10">
-            Every AI session your attorneys run is a potential malpractice liability. Axiom governs them
+            Every AI session your attorneys run is a potential malpractice liability. ACCRNOVA governs them
             <strong className="text-white"> deterministically</strong> — not probabilistically.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="mailto:legal@useaxiom.io?subject=AI Risk Assessment Request"
+              href="mailto:legal@accrnova.app?subject=AI Risk Assessment Request"
               className="inline-flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 text-white font-bold px-8 py-4 rounded-xl text-base transition-colors"
             >
               Request a 20-minute AI risk assessment →
@@ -114,7 +114,7 @@ export default function ForLawFirms() {
             <p className="text-base text-slate-600 leading-relaxed">
               ABA Formal Opinion 512 (2023) and subsequent bar guidance confirm that attorneys cannot delegate
               professional judgment to AI systems. The responsibility — and the liability — remains with the lawyer.
-              Axiom creates the audit trail that demonstrates that responsibility was exercised with appropriate
+              ACCRNOVA creates the audit trail that demonstrates that responsibility was exercised with appropriate
               diligence and oversight.
             </p>
           </div>
@@ -142,7 +142,7 @@ export default function ForLawFirms() {
               Governance built for how law firms work
             </h2>
             <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-              Axiom integrates with your existing AI tools — it doesn't replace them. It governs them.
+              ACCRNOVA integrates with your existing AI tools — it doesn't replace them. It governs them.
             </p>
           </div>
 
@@ -164,12 +164,12 @@ export default function ForLawFirms() {
       <section className="py-20 px-6 bg-slate-900 text-white">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-black mb-4">How Axiom works for law firms</h2>
+            <h2 className="text-3xl sm:text-4xl font-black mb-4">How ACCRNOVA works for law firms</h2>
             <p className="text-slate-400 text-lg">From prompt to protected output in milliseconds</p>
           </div>
           <div className="space-y-4">
             {[
-              { step: '01', title: 'Attorney initiates AI session', desc: 'Axiom captures the session context, attorney credentials, and matter classification.' },
+              { step: '01', title: 'Attorney initiates AI session', desc: 'ACCRNOVA captures the session context, attorney credentials, and matter classification.' },
               { step: '02', title: 'Streaming Circuit Breaker evaluates in real-time', desc: 'Every token of AI output is evaluated against your firm\'s compliance rules as it streams. Not after — during.' },
               { step: '03', title: 'Privilege & compliance checks fire automatically', desc: 'PII detection, privilege flags, jurisdiction checks, and output quality gates run simultaneously without adding latency.' },
               { step: '04', title: 'Cryptographic record committed to audit ledger', desc: 'A tamper-evident, timestamped record of every session is committed to your audit ledger. Immutable. Discoverable if needed.' },
@@ -192,12 +192,12 @@ export default function ForLawFirms() {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4">Simple, predictable pricing</h2>
           <p className="text-lg text-slate-500 mb-12">
-            One malpractice claim costs more than Axiom for a decade. That's the ROI.
+            One malpractice claim costs more than ACCRNOVA for a decade. That's the ROI.
           </p>
           <div className="border-2 border-slate-900 rounded-2xl p-8 text-left">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Axiom for Law Firms</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">ACCRNOVA for Law Firms</p>
                 <p className="text-4xl font-black text-slate-900">$3,000<span className="text-xl text-slate-400 font-normal">/mo</span></p>
                 <p className="text-sm text-slate-500 mt-1">Starting price · scales with firm size</p>
               </div>
@@ -221,7 +221,7 @@ export default function ForLawFirms() {
               ))}
             </div>
             <a
-              href="mailto:legal@useaxiom.io?subject=Law Firm Pricing Inquiry"
+              href="mailto:legal@accrnova.app?subject=Law Firm Pricing Inquiry"
               className="flex items-center justify-center gap-2 w-full bg-slate-900 hover:bg-slate-700 text-white font-bold py-4 rounded-xl text-base transition-colors"
             >
               Request a 20-minute AI risk assessment for your firm →
@@ -241,11 +241,11 @@ export default function ForLawFirms() {
           </h2>
           <p className="text-slate-600 mb-8 leading-relaxed">
             If an attorney at your firm made an AI-assisted error today, could you demonstrate the oversight process
-            that was in place? If not — Axiom fixes that in one afternoon.
+            that was in place? If not — ACCRNOVA fixes that in one afternoon.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="mailto:legal@useaxiom.io?subject=AI Risk Assessment Request"
+              href="mailto:legal@accrnova.app?subject=AI Risk Assessment Request"
               className="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-700 text-white font-bold px-8 py-4 rounded-xl text-base transition-colors"
             >
               Request a 20-minute AI risk assessment →
@@ -265,7 +265,7 @@ export default function ForLawFirms() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <div className="w-6 h-6 bg-white/10 rounded flex items-center justify-center text-white font-bold text-xs">A</div>
-            <span className="text-sm font-semibold text-white">Axiom</span>
+            <span className="text-sm font-semibold text-white">ACCRNOVA</span>
             <span className="text-xs">— AI Governance Platform</span>
           </div>
           <div className="flex gap-6 text-xs">

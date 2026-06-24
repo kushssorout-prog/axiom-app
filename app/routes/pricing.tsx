@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 
 const PLANS = [
   {
-    name: 'Axiom Core',
+    name: 'ACCRNOVA Core',
     price: 3000,
     cta: 'Get Started',
     ctaStyle: 'bg-slate-900 hover:bg-slate-800 text-white',
@@ -13,14 +13,14 @@ const PLANS = [
       'Audit Ledger (tamper-evident)',
       'Human-in-the-loop approvals',
       'Operator access & scorecard',
-      'Axiom-Lex vector boundaries',
+      'ACCRNOVA-Lex vector boundaries',
       'Canonical Terminology Engine',
       'Regulatory Reporter',
       'Up to 5 operators',
     ],
   },
   {
-    name: 'Axiom Legal',
+    name: 'ACCRNOVA Legal',
     price: 2000,
     cta: 'Add to Core',
     ctaStyle: 'bg-blue-600 hover:bg-blue-700 text-white',
@@ -37,7 +37,7 @@ const PLANS = [
     ],
   },
   {
-    name: 'Axiom Intelligence',
+    name: 'ACCRNOVA Intelligence',
     price: 1500,
     cta: 'Add to Core',
     ctaStyle: 'bg-blue-600 hover:bg-blue-700 text-white',
@@ -54,7 +54,7 @@ const PLANS = [
     ],
   },
   {
-    name: 'Axiom Pricing',
+    name: 'ACCRNOVA Pricing',
     price: 1000,
     cta: 'Add to Core',
     ctaStyle: 'bg-blue-600 hover:bg-blue-700 text-white',
@@ -79,15 +79,15 @@ const FAQS = [
   },
   {
     q: 'Can I add modules to an existing subscription?',
-    a: 'Yes. Axiom Legal, Axiom Intelligence, and Axiom Pricing are add-ons to Axiom Core. You need at least one Core subscription to activate add-on modules.',
+    a: 'Yes. ACCRNOVA Legal, ACCRNOVA Intelligence, and ACCRNOVA Pricing are add-ons to ACCRNOVA Core. You need at least one Core subscription to activate add-on modules.',
   },
   {
     q: 'Is there a free trial?',
-    a: 'We offer a 14-day pilot for enterprise customers. Reach out to hello@axiom.app to discuss your specific needs and arrange a pilot.',
+    a: 'We offer a 14-day pilot for enterprise customers. Reach out to hello@accrnova.app to discuss your specific needs and arrange a pilot.',
   },
   {
     q: 'What payment methods do you accept?',
-    a: 'We accept all major credit cards via Stripe, as well as bank transfer for annual enterprise contracts. Contact us at hello@axiom.app for invoicing options.',
+    a: 'We accept all major credit cards via Stripe, as well as bank transfer for annual enterprise contracts. Contact us at hello@accrnova.app for invoicing options.',
   },
 ];
 
@@ -112,10 +112,10 @@ export default function PricingPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">A</div>
-            <span className="font-bold text-slate-900 tracking-tight text-[15px]">Axiom</span>
+            <span className="font-bold text-slate-900 tracking-tight text-[15px]">ACCRNOVA</span>
           </div>
           <Link to="/dashboard" className="text-sm text-slate-500 hover:text-slate-900 flex items-center gap-1.5 transition-colors">
-            ← Back to Axiom
+            ← Back to ACCRNOVA
           </Link>
         </div>
       </header>
@@ -172,7 +172,7 @@ export default function PricingPage() {
             Need on-premise deployment, custom SLAs, white-labelling, or volume pricing? Let's talk.
           </p>
           <a
-            href="mailto:hello@axiom.app"
+            href="mailto:hello@accrnova.app"
             className="inline-flex items-center gap-2 bg-white text-slate-900 font-bold text-sm px-6 py-2.5 rounded-xl hover:bg-slate-100 transition-colors"
           >
             Talk to us →
@@ -231,7 +231,7 @@ export default function PricingPage() {
                   'Go to stripe.com and sign in or create an account',
                   'Navigate to Developers → API keys',
                   'Copy your secret key (starts with sk_live_…)',
-                  'Add it in Axiom Settings → Integrations → Stripe',
+                  'Add it in ACCRNOVA Settings → Integrations → Stripe',
                 ].map((step, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-slate-600">
                     <span className="w-5 h-5 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -247,14 +247,14 @@ export default function PricingPage() {
               <p className="text-sm text-blue-800 font-medium">Manual setup available</p>
               <p className="text-xs text-blue-600 mt-0.5">
                 Email us at{' '}
-                <a href="mailto:hello@axiom.app" className="underline font-semibold">hello@axiom.app</a>
+                <a href="mailto:hello@accrnova.app" className="underline font-semibold">hello@accrnova.app</a>
                 {' '}to set up your subscription manually. We'll respond within one business day.
               </p>
             </div>
 
             <div className="flex gap-2">
               <a
-                href={`mailto:hello@axiom.app?subject=Axiom subscription - ${encodeURIComponent(modalPlan)}`}
+                href={`mailto:hello@accrnova.app?subject=ACCRNOVA subscription - ${encodeURIComponent(modalPlan)}`}
                 className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl text-center transition-colors"
               >
                 Email us to subscribe

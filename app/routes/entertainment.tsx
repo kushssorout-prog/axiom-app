@@ -195,7 +195,7 @@ function IPChecker() {
       `RECOMMENDATION:`,
       `  ${result.recommendation}`,
       `─────────────────────────────────────────`,
-      `Axiom Entertainment & Media Compliance Module`,
+      `ACCRNOVA Entertainment & Media Compliance Module`,
     ].join('\n');
     setReport(lines);
     const blob = new Blob([lines], { type: 'text/plain' });

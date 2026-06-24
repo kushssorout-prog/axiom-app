@@ -80,9 +80,9 @@ function getContentPrompt(vertical: string, type: string): string {
   }[vertical] || vertical;
 
   const prompts: Record<string, string> = {
-    linkedin_post: `Write a compelling LinkedIn post (150-200 words) for Axiom, an AI governance platform for ${verticalContext}. Focus on a specific risk that firms face when using AI without governance. Include a thought-provoking statistic or question. End with a subtle CTA to learn more. Do NOT use hashtags. Tone: authoritative, concerned, helpful. Brand: Axiom (useaxiom.io).`,
-    blog_intro: `Write a blog post introduction (200-250 words) for Axiom's blog. Topic: "Why ${vertical === 'legal' ? 'Law Firms' : vertical === 'finance' ? 'Financial Services Firms' : 'Healthcare Organisations'} Cannot Ignore AI Governance in 2026". Open with a compelling scenario or statistic. Establish credibility. Preview what the article will cover. Tone: expert, practical.`,
-    email_subject: `Generate 5 cold email subject lines for Axiom targeting ${verticalContext}. Each should be under 50 characters, personalisation-ready (use [FIRM] or [NAME] placeholder), create urgent curiosity about AI risk without being clickbait. Output as a numbered list, subject lines only, no explanations.`,
+    linkedin_post: `Write a compelling LinkedIn post (150-200 words) for ACCRNOVA, an AI governance platform for ${verticalContext}. Focus on a specific risk that firms face when using AI without governance. Include a thought-provoking statistic or question. End with a subtle CTA to learn more. Do NOT use hashtags. Tone: authoritative, concerned, helpful. Brand: ACCRNOVA (accrnova.app).`,
+    blog_intro: `Write a blog post introduction (200-250 words) for ACCRNOVA's blog. Topic: "Why ${vertical === 'legal' ? 'Law Firms' : vertical === 'finance' ? 'Financial Services Firms' : 'Healthcare Organisations'} Cannot Ignore AI Governance in 2026". Open with a compelling scenario or statistic. Establish credibility. Preview what the article will cover. Tone: expert, practical.`,
+    email_subject: `Generate 5 cold email subject lines for ACCRNOVA targeting ${verticalContext}. Each should be under 50 characters, personalisation-ready (use [FIRM] or [NAME] placeholder), create urgent curiosity about AI risk without being clickbait. Output as a numbered list, subject lines only, no explanations.`,
   };
-  return prompts[type] || `Write marketing content for Axiom AI governance platform targeting ${verticalContext}.`;
+  return prompts[type] || `Write marketing content for ACCRNOVA AI governance platform targeting ${verticalContext}.`;
 }

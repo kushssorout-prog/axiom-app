@@ -30,11 +30,11 @@ export async function action({ request, context }: Route.ActionArgs) {
   }));
 
   if (text === "/start") {
-    await send(chatId, `🔐 <b>Axiom Circuit Breaker</b>\n\nConnected. You'll receive alerts when AI sessions are frozen.\n\nCommands:\n/status — Platform overview\n/approvals — Pending reviews\n/help — All commands`);
+    await send(chatId, `🔐 <b>ACCRNOVA Circuit Breaker</b>\n\nConnected. You'll receive alerts when AI sessions are frozen.\n\nCommands:\n/status — Platform overview\n/approvals — Pending reviews\n/help — All commands`);
   } else if (text === "/status") {
     const res = await stub.fetch(new Request("http://do/api/dashboard"));
     const s = await res.json() as any;
-    await send(chatId, `⚡ <b>Axiom Status</b>\n\n🟢 Circuit Breaker: Active\n📊 Sessions: ${s.totalSessions}\n🛡 Blocked Today: ${s.blockedToday}\n⏳ Pending: ${s.pendingApprovals}\n👥 Operators: ${s.totalOperators}`);
+    await send(chatId, `⚡ <b>ACCRNOVA Status</b>\n\n🟢 Circuit Breaker: Active\n📊 Sessions: ${s.totalSessions}\n🛡 Blocked Today: ${s.blockedToday}\n⏳ Pending: ${s.pendingApprovals}\n👥 Operators: ${s.totalOperators}`);
   } else if (text === "/approvals" || text === "/pending") {
     const res = await stub.fetch(new Request("http://do/api/approvals?status=pending"));
     const approvals = await res.json() as any[];
